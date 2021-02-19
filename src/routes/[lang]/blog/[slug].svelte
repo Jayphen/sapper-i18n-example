@@ -2,7 +2,7 @@
 	export async function preload({ params }) {
 		// the `slug` parameter is available because
 		// this file is called [slug].svelte
-		const res = await this.fetch(`blog/${params.slug}.json`);
+		const res = await this.fetch(`/${params.lang}/blog/${params.slug}.json`);
 		const data = await res.json();
 
 		if (res.status === 200) {
@@ -16,6 +16,16 @@
 <script>
 	export let post;
 </script>
+
+<svelte:head>
+	<title>{post.title}</title>
+</svelte:head>
+
+<h1>{post.title}</h1>
+
+<div class="content">
+	{@html post.html}
+</div>
 
 <style>
 	/*
@@ -52,13 +62,3 @@
 		margin: 0 0 0.5em 0;
 	}
 </style>
-
-<svelte:head>
-	<title>{post.title}</title>
-</svelte:head>
-
-<h1>{post.title}</h1>
-
-<div class="content">
-	{@html post.html}
-</div>
