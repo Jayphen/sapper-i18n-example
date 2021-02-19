@@ -5,4 +5,4 @@
 	$: ({ lang } = $session);
 </script>
 
-lang from session: {lang}
+lang from session is: {lang}
