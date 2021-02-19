@@ -1,8 +1,10 @@
 <script>
 	import { stores } from "@sapper/app";
-	const { session } = stores();
+	const { page } = stores();
 
-	$: ({ lang } = $session);
+	$: ({
+		params: { lang },
+	} = $page);
 </script>
 
-lang from session: {lang}
+lang is: {lang}

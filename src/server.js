@@ -27,14 +27,7 @@ express()
 	.use(
 		compression({threshold: 0}),
 		sirv('static', {dev}),
-		sapper.middleware({
-			session: (req) => {
-				return {
-					// Also set the lang in the sapper session
-					lang: req.lang
-				}
-			}
-		})
+		sapper.middleware()
 	)
 	.listen(PORT, err => {
 		if (err) console.log('error', err);
