@@ -9,8 +9,9 @@ const {PORT, NODE_ENV} = process.env;
 const dev = NODE_ENV === 'development';
 
 const locales = ["en", "de"]
+const defaultLang = 'en'
 
-express() // You can also use Express
+express()
 	.use(cookieParser())
 	.get("/", (req, res) => {
 		const query = qs.stringify(req.query, {addQueryPrefix: true});
@@ -29,6 +30,7 @@ express() // You can also use Express
 		sapper.middleware({
 			session: (req) => {
 				return {
+					// Also set the lang in the sapper session
 					lang: req.lang
 				}
 			}
@@ -39,10 +41,14 @@ express() // You can also use Express
 	});
 
 
+/*
+ * Get the preferred lang either from a cookie or from acceptsLanguages
+ * If the lang is not de, use en (default)
+ */
 function getPreferredLanguage(req) {
-	// lang could be stored in a cookie
+	// lang could be stored in a cookie when the user manually sets it via a lang switcher
 	if (req.cookies.preferredLang) {
-		return req.cookies.preferredLang.toLowerCase();
+		return req.cookies.preferredLang;
 	}
 
 	const [acceptsLang] = req.acceptsLanguages();
@@ -50,10 +56,15 @@ function getPreferredLanguage(req) {
 	if (acceptsLang.match(/^de/)) {
 		return "de";
 	} else {
-		return "en";
+		return defaultLang
 	}
 }
 
+/*
+ * Extract the language from the url and set it on the req object
+ * If the url isn't a supported one, fall back to checking the user's
+ * preferred lang (from acceptsLanguages)
+*/
 function getLanguageFromReq(req, _, next) {
 	const regex = new RegExp(`\/(?<lang>${locales.join("|")})(?:\/|$)`)
 	const match = req.url
